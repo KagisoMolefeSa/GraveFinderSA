@@ -1,1 +1,60 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
 
+header {
+    background: #006837;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+.hero {
+    padding: 30px;
+    text-align: center;
+}
+
+.hero h2 {
+    color: #006837;
+}
+
+input {
+    width: 80%;
+    max-width: 400px;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #006837;
+    border-radius: 8px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px 24px;
+    background: #ffb81c;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #f0a500;
+}
+
+.about {
+    background: white;
+    margin: 30px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+footer {
+    background: #006837;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}
