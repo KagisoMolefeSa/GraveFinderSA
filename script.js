@@ -1,50 +1,62 @@
 const { createClient } = supabase;
 
 const supabaseClient = createClient(
-    "https://gmahnnpwrkmzsvmyhoxw.supabase.co",
-    "sb_publishable_TWYTr1QwHu_mmYvzjfuW1w_pc4O7f6p"
+  "https://gmahnnpwrkmzsvmyhoxw.supabase.co",
+  "YOUR_SUPABASE_PUBLISHABLE_KEY"
 );
 
 async function searchGrave() {
+  const search = document.getElementById("searchInput").value.trim();
+  const results = document.getElementById("results");
 
-    const search = document.getElementById("searchInput").value.trim();
-    const results = document.getElementById("results");
+  if (search === "") {
+    results.innerHTML = "<p>Please enter a name or grave number.</p>";
+    return;
+  }
 
-    if (search === "") {
-        results.innerHTML = "<p>Please enter a name or grave number.</p>";
-        return;
-    }
+  results.innerHTML = "<p>Searching...</p>";
 
-    results.innerHTML = "<p>Searching...</p>";
+  const { data, error } = await supabaseClient
+    .from("graves")
+    .select("*");
 
-    const { data, error } = await supabaseClient
-        .from("graves")
-        .select("*")
-        .or(`name.ilike.%${search}%,grave_number.ilike.%${search}%`);
+  if (error) {
+    results.innerHTML =
+      "<p>Error searching database: " + error.message + "</p>";
+    console.error(error);
+    return;
+  }
 
-    if (error) {
-        results.innerHTML =
-            "<p>Error searching database: " + error.message + "</p>";
-        return;
-    }
+  const filtered = data.filter(grave => {
+    return (
+      (grave.First || "").toLowerCase().includes(search.toLowerCase()) ||
+      (grave.Last || "").toLowerCase().includes(search.toLowerCase()) ||
+      (grave.Grave || "").toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
-    if (!data || data.length === 0) {
-        results.innerHTML =
-            "<p>No graves found matching your search.</p>";
-        return;
-    }
+  if (filtered.length === 0) {
+    results.innerHTML = "<p>No graves found.</p>";
+    return;
+  }
 
-    let html = "<h3>Search Results</h3>";
+  let html = "<h3>Search Results</h3>";
 
-    data.forEach(grave => {
-        html += `
-            <div class="grave-card">
-                <h4>${grave.name}</h4>
-                <p><strong>Grave Number:</strong> ${grave.grave_number}</p>
-                <p><strong>Cemetery:</strong> ${grave.cemetery}</p>
-            </div>
-        `;
-    });
+  filtered.forEach(grave => {
+    html += `
+      <div class="grave-card">
+        <h3>${grave.First} ${grave.Last}</h3>
+        <p><strong>Cemetery:</strong> ${grave.Cemetery}</p>
+        <p><strong>Section:</strong> ${grave.Section}</p>
+        <p><strong>Grave Number:</strong> ${grave.Grave}</p>
+        <p><strong>Notes:</strong> ${grave.Notes || "None"}</p>
+      </div>
+    `;
+  });
 
-    results.innerHTML = html;
+  results.innerHTML = html;
 }
+
+document
+  .getElementById("searchButton")
+  .addEventListener("click", searchGrave);
