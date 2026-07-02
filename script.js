@@ -1,9 +1,6 @@
 const { createClient } = supabase;
 
-const supabaseClient = createClient(
-  "https://gmahnnpwrkmzsvmyhoxw.supabase.co",
-  "YOUR_SUPABASE_PUBLISHABLE_KEY"
-);
+sb_publishable_TWYTr1QwHu_mmYvzjfuW1w_pc4O7f6p
 
 async function searchGrave() {
   const search = document.getElementById("searchInput").value.trim();
