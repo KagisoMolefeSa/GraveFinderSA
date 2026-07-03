@@ -16,8 +16,19 @@ async function searchGrave() {
     results.innerHTML = "<p>Searching...</p>";
 
     const { data, error } = await supabaseClient
-        .from("graves_v2")
-        .select("*");
+    .from("graves_v2")
+    .select("*");
+
+console.log("DATA:", data);
+console.log("ERROR:", error);
+
+if (error) {
+    results.innerHTML = "<p>Error: " + error.message + "</p>";
+    return;
+}
+
+results.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+return;
 
     if (error) {
         results.innerHTML = "<p>" + error.message + "</p>";
