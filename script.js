@@ -1,12 +1,13 @@
-const { createClient } = supabase;
+const SUPABASE_URL = "https://gmahnnpwrkmzsvmyhoxw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_TWYTr1QwHu_mmYvzjfuW1w_pc4O7f6p";
 
-sb_publishable_TWYTr1QwHu_mmYvzjfuW1w_pc4O7f6p
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function searchGrave() {
-  const search = document.getElementById("searchInput").value.trim();
+  const search = document.getElementById("searchInput").value.trim().toLowerCase();
   const results = document.getElementById("results");
 
-  if (search === "") {
+  if (!search) {
     results.innerHTML = "<p>Please enter a name or grave number.</p>";
     return;
   }
@@ -14,39 +15,36 @@ async function searchGrave() {
   results.innerHTML = "<p>Searching...</p>";
 
   const { data, error } = await supabaseClient
-    .from("graves")
+    .from("graves_v2")
     .select("*");
 
   if (error) {
-    results.innerHTML =
-      "<p>Error searching database: " + error.message + "</p>";
     console.error(error);
+    results.innerHTML = `<p>Error: ${error.message}</p>`;
     return;
   }
 
-  const filtered = data.filter(grave => {
-    return (
-      (grave.First || "").toLowerCase().includes(search.toLowerCase()) ||
-      (grave.Last || "").toLowerCase().includes(search.toLowerCase()) ||
-      (grave.Grave || "").toLowerCase().includes(search.toLowerCase())
-    );
-  });
+  const filtered = data.filter(grave =>
+    (grave.first_name || "").toLowerCase().includes(search) ||
+    (grave.last_name || "").toLowerCase().includes(search) ||
+    (grave.grave_number || "").toLowerCase().includes(search)
+  );
 
   if (filtered.length === 0) {
     results.innerHTML = "<p>No graves found.</p>";
     return;
   }
 
-  let html = "<h3>Search Results</h3>";
+  let html = "";
 
   filtered.forEach(grave => {
     html += `
       <div class="grave-card">
-        <h3>${grave.First} ${grave.Last}</h3>
-        <p><strong>Cemetery:</strong> ${grave.Cemetery}</p>
-        <p><strong>Section:</strong> ${grave.Section}</p>
-        <p><strong>Grave Number:</strong> ${grave.Grave}</p>
-        <p><strong>Notes:</strong> ${grave.Notes || "None"}</p>
+        <h2>${grave.first_name} ${grave.last_name}</h2>
+        <p><strong>Cemetery:</strong> ${grave.cemetery}</p>
+        <p><strong>Section:</strong> ${grave.section}</p>
+        <p><strong>Grave Number:</strong> ${grave.grave_number}</p>
+        <p><strong>Notes:</strong> ${grave.notes || "None"}</p>
       </div>
     `;
   });
