@@ -1,4 +1,6 @@
+alert("NEW SCRIPT LOADED");
 const SUPABASE_URL = "https://gmahnnpwrkmzsvmyhoxw.supabase.co";
+
 const SUPABASE_KEY = "sb_publishable_TWYTr1QwHu_mmYvzjfuW1w_pc4O7f6p";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
